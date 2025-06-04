@@ -1,5 +1,4 @@
 import { LoginButton } from '@/components/login-button';
-import { KeycloakLogo } from '@/components/keycloak-logo';
 
 export default function Home() {
   return (
@@ -7,7 +6,6 @@ export default function Home() {
       <header className="border-b bg-background">
         <div className="container flex items-center justify-between h-16 mx-auto px-4">
           <div className="flex items-center space-x-2">
-            <KeycloakLogo className="h-8 w-8" />
             <span className="font-semibold text-lg">QIAM Auth App</span>
           </div>
           <LoginButton />

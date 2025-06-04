@@ -1,5 +1,4 @@
 import { UserProfile } from "@/components/user-profile";
-import { KeycloakLogo } from "@/components/keycloak-logo";
 import { LogoutButton } from "@/components/logout-button";
 
 export default function Dashboard() {
@@ -8,7 +7,6 @@ export default function Dashboard() {
       <header className="border-b bg-background">
         <div className="container flex items-center justify-between h-16 mx-auto px-4">
           <div className="flex items-center space-x-2">
-            <KeycloakLogo className="h-8 w-8" />
             <span className="font-semibold text-lg">Keycloak Auth App</span>
           </div>
           <LogoutButton />
