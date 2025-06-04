@@ -5,7 +5,6 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { KeycloakLogo } from "@/components/keycloak-logo";
 import { Loader2 } from "lucide-react";
 
 export default function SignIn() {
@@ -27,7 +26,6 @@ export default function SignIn() {
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
             <div className="bg-primary/10 p-3 rounded-full">
-              <KeycloakLogo className="h-8 w-8 text-primary" />
             </div>
           </div>
           <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
@@ -60,7 +58,6 @@ export default function SignIn() {
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
-                  <KeycloakLogo className="h-4 w-4" />
                   Sign in with Keycloak
                 </>
               )}
