@@ -1,8 +1,8 @@
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { nextApi } from "@/services";
 import formatError from "@/utils/format/formatError";
 import { verifyPermissionLevel } from "@/utils/permissions/verifyPermissionLevel";
+import { Button } from "antd";
 
 interface TopbarComponentProps {
   userPermission?: PermissionLevels;
@@ -12,7 +12,6 @@ export default function TopbarComponent({
   userPermission,
 }: TopbarComponentProps) {
   const { data: session }: any = useSession();
-  const router = useRouter();
 
   const hasEditPermission = verifyPermissionLevel(
     "editor",
@@ -32,14 +31,36 @@ export default function TopbarComponent({
     }
   }
 
-  // Você pode adicionar aqui algum botão ou estrutura de UI própria,
-  // já que o Topbar foi removido.
   return (
-    <div>
-      <p>User: {session?.user?.name}</p>
-      <button onClick={handleLogout} disabled={hasEditPermission}>
-        Logout
-      </button>
-    </div>
+    <header
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "1rem 2rem",
+        backgroundColor: "#080b11",
+        borderBottom: "none",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+      }}
+    >
+      <div style={{ fontWeight: 600, fontSize: "1.25rem", color: "#333" }}>
+        <img src="https://storage.googleapis.com/images.qriarlabs.com/qiam/qiam-mono-white.png" width={"150px"}></img>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <span style={{ fontSize: "0.95rem", color: "#555" }}>
+          {session?.user?.name}
+        </span>
+        <Button
+          onClick={handleLogout}
+         className="border-white text-white hover:bg-white/10 hover:border-gray-300"
+        >
+          Logout
+        </Button>
+      </div>
+    </header>
   );
 }
