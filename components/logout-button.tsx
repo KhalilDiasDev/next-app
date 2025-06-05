@@ -15,24 +15,27 @@ export function LogoutButton() {
     try {
       setIsLoading(true);
       
-      const idToken = session?.idToken;
-      if (idToken) {
-        const issuer = process.env.NEXT_PUBLIC_KEYCLOAK_ISSUER || process.env.KEYCLOAK_ISSUER;
-        const logoutUrl = `${issuer}/protocol/openid-connect/logout`;
-        console.log(logoutUrl);
-        
-        
-        await signOut({
-          redirect: false,
-        });
+      // Clear localStorage
+      localStorage.clear();
+      
+      // Call logout API
+      const response = await fetch(`/api/logout?id_token=${session?.idToken}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-        window.location.href = `${logoutUrl}?id_token_hint=${idToken}&post_logout_redirect_uri=${encodeURIComponent(window.location.origin)}`;
-
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Sign out from NextAuth
+        await signOut({ redirect: false });
+        
+        // Redirect to Keycloak logout
+        window.location.href = data.path;
       } else {
-        await signOut({
-          redirect: true,
-          callbackUrl: "/"
-        });
+        throw new Error('Failed to logout');
       }
     } catch (error) {
       console.error("Logout error:", error);
@@ -51,7 +54,6 @@ export function LogoutButton() {
 
   return (
     <div className="flex items-center space-x-4">
-    
       <Button 
         onClick={handleLogout} 
         disabled={isLoading || status !== "authenticated"}
