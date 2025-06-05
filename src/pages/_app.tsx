@@ -11,7 +11,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { QoreThemeWrapper } from "@qriar-labs/qore";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false } },
@@ -64,20 +63,13 @@ export default function App({ Component, pageProps }: AppProps) {
               },
             }}
           >
-            <QoreThemeWrapper
-              theme={{
-                ...(!isThemeDark ? customTheme : customDarkTheme),
-                algorithm: isThemeDark ? darkAlgorithm : defaultAlgorithm,
-              }}
-            >
-              <QueryClientProvider client={queryClient}>
-                <NotificationContext.Provider value={{ notification: api }}>
-                  {contextHolder}
+            <QueryClientProvider client={queryClient}>
+              <NotificationContext.Provider value={{ notification: api }}>
+                {contextHolder}
 
-                  <Component {...pageProps} />
-                </NotificationContext.Provider>
-              </QueryClientProvider>
-            </QoreThemeWrapper>
+                <Component {...pageProps} />
+              </NotificationContext.Provider>
+            </QueryClientProvider>
           </ConfigProvider>
         </SessionProvider>
       </ThemeContext.Provider>
