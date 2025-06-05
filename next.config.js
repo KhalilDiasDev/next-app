@@ -1,17 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  reactStrictMode: false,
   env: {
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-    KEYCLOAK_ID: process.env.KEYCLOAK_ID || '',
-    KEYCLOAK_SECRET: process.env.KEYCLOAK_SECRET || '',
-    KEYCLOAK_ISSUER: process.env.KEYCLOAK_ISSUER || '',
-  },
-  publicRuntimeConfig: {
-    NEXT_PUBLIC_KEYCLOAK_ISSUER: process.env.KEYCLOAK_ISSUER,
+    NEXT_PUBLIC_NODE_HEIGHT: "40",
+    NEXT_PUBLIC_NODE_GAP_Y: "60",
+    NEXT_PUBLIC_NODE_GAP_X: "450",
   },
 };
 
