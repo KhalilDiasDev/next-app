@@ -5,7 +5,6 @@ import NodeComponent, { noteGap, noteSize } from "../utils/nodeComponent";
 import NoteCardComponent from "@/components/cards/notes";
 import CreateNoteCardComponent from "@/components/cards/notes/create";
 import { useSession } from "next-auth/react";
-import UserAvatarComponent from "@/components/misc/userAvatar";
 import { EditOutlined } from "@ant-design/icons";
 
 interface props {
@@ -79,17 +78,7 @@ function BoardNode(this: any, { id, data }: props) {
 
   return (
     <>
-      {activeUsers.length > 0 && (
-        <div className="absolute top-2 left-2 h-full flex gap-1 z-[100]">
-          {activeUsers.map((item, index) => (
-            <UserAvatarComponent
-              user={{ name: item.user }}
-              key={index}
-              tooltip={`${item.user} is editing`}
-            />
-          ))}
-        </div>
-      )}
+     
       <Tooltip title="Edit">
         <Button
           icon={<EditOutlined />}

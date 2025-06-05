@@ -18,7 +18,6 @@ import {
   Tabs,
   Tag,
 } from "antd";
-import { templateItems } from "@/data/templates";
 import Icons from "@/data/icons";
 import TopbarComponent from "@/components/ui/topbar";
 
@@ -170,46 +169,7 @@ export default function MyTemplatesLayout({}) {
           </Select>
         </div>
 
-        <Row>
-          {templateItems.filter(filterItems).map((item) => (
-            <Col key={item.key} xs={24} sm={12} md={8} lg={6}>
-              <Card
-                hoverable
-                onClick={() => handleOpenModal(item)}
-                className="m-1 h-40 w-900"
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    height: "100%",
-                  }}
-                >
-                  <img
-                    src={item.logo}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      marginRight: 16,
-                    }}
-                    alt={item.label}
-                  />
-                  <div>
-                    <div style={{ fontWeight: "bold" }}>{item.label}</div>
-                    <Tag>
-                      {" "}
-                      {item.category.charAt(0).toUpperCase() +
-                        item.category.slice(1).toLowerCase()}
-                    </Tag>
-                    <div style={{ fontSize: "12px", color: "gray" }}>
-                      {item.description}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+      
       </div>
 
       <Modal

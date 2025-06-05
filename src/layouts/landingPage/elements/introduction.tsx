@@ -18,9 +18,9 @@ export default function HomeIntroductionLayout({
 
   useEffect(() => {
     const kc = new Keycloak({
-      url: `https://${data.domain}`,
       realm: data.realm,
       clientId: data.clientId,
+      url: `https://${data.domain}/auth`
     });
 
     kc.init({ onLoad: "check-sso", silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html" })

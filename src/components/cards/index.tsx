@@ -119,14 +119,7 @@ export default function CardComponent({
           </Typography>
         )} */}
         <div className="absolute bottom-2 right-2">
-          {people?.map((person, index) => (
-            <UserAvatarComponent
-              key={index}
-              user={person}
-              size="small"
-              tooltip={`${person.name} is editing`}
-            />
-          ))}
+        
         </div>
       </div>
     </Card>

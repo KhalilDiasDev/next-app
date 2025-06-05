@@ -19,7 +19,6 @@ import {
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Icons from "@/data/icons";
-import { templateItems } from "@/data/templates";
 import { canvasItems } from "@/data/canvas";
 import { FormDetails } from "./formDetails";
 

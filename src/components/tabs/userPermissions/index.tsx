@@ -6,7 +6,6 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import { UserPemissionsTabFunctions } from "./functions";
 import { usersPermissionsTableColumns } from "@/assets/columns/usersPermissions";
-import UserAvatarComponent from "@/components/misc/userAvatar";
 import { LoadingHook } from "@/hooks/loading";
 import { SpinnerComponent } from "@/components/misc/spinner";
 import formatError from "@/utils/format/formatError";
@@ -175,8 +174,7 @@ export default function UsersPermissionsTabComponent<
               allowClear
               optionRender={(item) => (
                 <Space>
-                  <UserAvatarComponent user={item.data} />
-                  {item.label}
+                  
                 </Space>
               )}
             />
