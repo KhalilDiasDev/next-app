@@ -47,7 +47,6 @@
   "devDependencies": {
     "@types/aos": "^3.0.7",
     "@types/dot-object": "^2.1.6",
-    "@types/keycloak-js": "^3.4.1",
     "@types/markdown-it": "^14.1.2",
     "@types/react": "^18.0.28",
     "@types/react-beautiful-dnd": "^13.1.4",
