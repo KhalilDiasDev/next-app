@@ -5,7 +5,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta name="description" content="Powered by Qriar labs" />
-        <link rel="icon" href="/icon-canvas.png" type="image/png" />
+        <link rel="icon" href="https://images.qriarlabs.com/qiam/qiam-white-icon.ico" type="image/png" />
       </Head>
       <body>
         <Main />
