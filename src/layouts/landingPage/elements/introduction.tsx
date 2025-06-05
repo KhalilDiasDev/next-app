@@ -58,9 +58,9 @@ export default function HomeIntroductionLayout({
             data-aos="fade-down"
           >
             <div className="w-16 h-16 relative hidden md:block">
-              <div className="w-full h-full bg-gradient-to-br from-white to-gray-300 rounded-lg flex items-center justify-center shadow-lg shadow-white/25">
-                <span className="text-black font-bold text-xl">Q</span>
-              </div>
+            <div style={{ fontWeight: 600, fontSize: "1.25rem", color: "#333" }}>
+        <img src="https://storage.googleapis.com/images.qriarlabs.com/qiam/qiam-mono-white.png" width={"150px"}></img>
+      </div>
             </div>
           
             <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white to-transparent hidden md:flex opacity-30" />
