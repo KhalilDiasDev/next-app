@@ -1,8 +1,7 @@
 import { Button } from "antd";
 import Title from "../components/title";
 import Text from "../components/text";
-import { useEffect, useState } from "react";
-import Keycloak from "keycloak-js";
+import { signIn, useSession } from "next-auth/react";
 
 interface HomeIntroductionLayoutProps {
   redirectToLogin?: () => void;
@@ -13,25 +12,19 @@ export default function HomeIntroductionLayout({
   redirectToLogin,
   data 
 }: HomeIntroductionLayoutProps) {
-  const [keycloak, setKeycloak] = useState<any>(null);
-  
-
-  useEffect(() => {
-    const kc = new Keycloak({
-      realm: data.realm,
-      clientId: data.clientId,
-      url: `https://${data.domain}/auth`
-    });
-
-    kc.init({ onLoad: "check-sso", silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html" })
-      .then(() => {
-        setKeycloak(kc);
-      })
-  }, []);
+  const { data: session, status } = useSession();
 
   const handleSignUp = () => {
-      keycloak.register();
-    } 
+    signIn(undefined, { callbackUrl: '/dashboard' }); // Redireciona para dashboard após login
+  };
+
+  const handleSecureAccess = () => {
+    if (redirectToLogin) {
+      redirectToLogin();
+    } else {
+      signIn(undefined, { callbackUrl: '/dashboard' });
+    }
+  };
     
   return (
     <>
@@ -74,17 +67,19 @@ export default function HomeIntroductionLayout({
             
             <Button 
               type="primary"
-              onClick={redirectToLogin}
+              onClick={handleSecureAccess}
+              loading={status === 'loading'}
               className="bg-white text-black border-none hover:bg-gray-200 shadow-lg shadow-white/25"
             >
-              Secure Access
+              {session ? 'Dashboard' : 'Secure Access'}
             </Button>
             <Button 
               type="default" 
               onClick={handleSignUp}
+              loading={status === 'loading'}
               className="border-white text-white hover:bg-white/10 hover:border-gray-300"
             >
-              Start Protection
+              {session ? 'Welcome Back' : 'Start Protection'}
             </Button>
           </div>
           
@@ -172,8 +167,9 @@ export default function HomeIntroductionLayout({
                   type="primary" 
                   className="mt-20 bg-white text-black border-none hover:bg-gray-200 shadow-lg shadow-white/25 px-8 py-6 h-auto text-lg" 
                   onClick={handleSignUp}
+                  loading={status === 'loading'}
                 >
-                  Secure Your Enterprise Now!
+                  {session ? 'Access Dashboard' : 'Secure Your Enterprise Now!'}
                 </Button>
               </div>
             </div>
