@@ -12,6 +12,82 @@ export default function MyWorkspacesLayout() {
     memoryUsage: 72,
     systemStatus: "Secure",
   });
+  const [users, setUsers] = useState<any[]>([]);
+
+  const [newUser, setNewUser] = useState({ username: '', email: '' });
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch('/api/users');
+      const data = await res.json();
+      setUsers(data.data);
+    } catch (error) {
+      console.error('Erro ao buscar usuários:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  
+  const handleAddUser = async () => {
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: newUser.username,
+          email: newUser.email,
+        }),
+      });
+  
+      if (res.ok) {
+        setNewUser({ username: '', email: '' });
+        await fetchUsers(); // Recarrega lista
+      } else {
+        console.error('Erro ao adicionar usuário');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      const res = await fetch('/api/users', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+  
+      if (res.ok) {
+        await fetchUsers(); 
+        console.log('Usuário deletado com sucesso');
+      } else {
+        const errorText = await res.text();
+        console.error('Erro ao excluir usuário:', res.status, errorText);
+      }
+    } catch (error) {
+      console.error('Erro no handleDeleteUser:', error);
+    }
+  };
+  
+
+
+useEffect(() => {
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch('/api/users');
+      const data = await res.json();
+      
+      setUsers(data.data);
+    } catch (error) {
+      console.error('Erro ao buscar usuários:', error);
+    }
+  };
+
+  fetchUsers();
+}, []);
+
+
 
   const trafficData = [
     { time: '10:00', threats: 5 },
@@ -45,6 +121,7 @@ export default function MyWorkspacesLayout() {
   return (
     <>
       <TopbarComponent />
+      
 
       <main className="p-8 min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white space-y-12">
         <h1 className="text-3xl font-bold mb-6">Cybersecurity Dashboard</h1>
@@ -65,21 +142,53 @@ export default function MyWorkspacesLayout() {
           </div>
         </div>
 
-        {/* Gráfico de ameaças */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4">Threats Over Time</h2>
-          <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={trafficData}>
-                <CartesianGrid stroke="#555" strokeDasharray="5 5" />
-                <XAxis dataKey="time" stroke="#ccc" />
-                <YAxis stroke="#ccc" />
-                <Tooltip />
-                <Line type="monotone" dataKey="threats" stroke="#00ff99" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
+{/* Formulário de criação de usuário */}
+<section className="mb-8">
+  <h2 className="text-xl font-semibold mb-4">Add New User</h2>
+  <div className="flex gap-4">
+    <input
+      type="text"
+      placeholder="Username"
+      value={newUser.username}
+      onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+      className="p-2 rounded bg-gray-700 text-white"
+    />
+    <input
+      type="email"
+      placeholder="Email"
+      value={newUser.email}
+      onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+      className="p-2 rounded bg-gray-700 text-white"
+    />
+    <button
+      onClick={handleAddUser}
+      className="px-4 py-2 bg-green-500 rounded text-white"
+    >
+      Add
+    </button>
+  </div>
+</section>
+
+{/* Lista de usuários */}
+<section>
+  <h2 className="text-xl font-semibold mb-4">Users from Keycloak</h2>
+  <div className="grid gap-4 md:grid-cols-2">
+    {Array.isArray(users) && users.map((user, idx) => (
+      <div key={idx} className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+        <div className="text-gray-400">Username: {user.username}</div>
+        <div className="text-green-400">Email: {user.email}</div>
+        <button
+  onClick={() => handleDeleteUser(user.id)}
+  className="mt-2 px-3 py-1 bg-red-500 rounded text-white"
+>
+  Delete
+</button>
+
+      </div>
+    ))}
+  </div>
+</section>
+
 
         {/* Gráfico de uso de sistema */}
         <section>
