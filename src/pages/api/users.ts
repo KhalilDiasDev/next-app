@@ -24,7 +24,7 @@ async function getAdminToken(): Promise<string> {
 
   if (!res.ok) {
     const error = await res.text();
-    throw new Error(`Erro ao obter token admin: ${error}`);
+    throw new Error(`Error getting admin token: ${error}`);
   }
 
   const data = await res.json();
@@ -32,120 +32,180 @@ async function getAdminToken(): Promise<string> {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method === 'DELETE') {
-        const { userId } = req.body;
-      
-        if (!userId) {
-          return res.status(400).json({ error: 'userId é obrigatório' });
-        }
-      
-        try {
-          const token = await getAdminToken();
-      
-          const deleteRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${userId}`, {
-            method: 'DELETE',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+  // PUT method for user editing
+  if (req.method === 'PUT') {
+    const { id, username, email, enabled } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    if (!username && !email && enabled === undefined) {
+      return res.status(400).json({ error: 'At least one field must be provided for update' });
+    }
+
+    try {
+      const token = await getAdminToken();
+
+      const updateData: any = {};
+      if (username) updateData.username = username;
+      if (email) updateData.email = email;
+      if (enabled !== undefined) updateData.enabled = enabled;
+
+      const updateRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (updateRes.status === 204) {
+        const getUserRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (getUserRes.ok) {
+          const updatedUser = await getUserRes.json();
+          return res.status(200).json({ 
+            message: 'User updated successfully',
+            user: updatedUser
           });
-      
-          if (deleteRes.status === 204) {
-            return res.status(200).json({ message: 'Usuário deletado com sucesso' });
-          } else {
-            const errorText = await deleteRes.text();
-            return res.status(deleteRes.status).json({ error: errorText });
-          }
-        } catch (err: any) {
-          console.error('Erro ao deletar usuário:', err);
-          return res.status(500).json({ error: 'Erro interno ao deletar usuário' });
+        } else {
+          return res.status(200).json({ message: 'User updated successfully' });
         }
+      } else {
+        const errorText = await updateRes.text();
+        console.error('Error updating user:', errorText);
+        return res.status(updateRes.status).json({ 
+          error: `Error updating user: ${errorText}` 
+        });
       }
-      if (req.method === 'POST') {
-        const { username, email } = req.body;
-      
-        if (!username || !email) {
-          return res.status(400).json({ error: 'username e email são obrigatórios' });
-        }
-      
-        try {
-          const token = await getAdminToken();
-      
-          // 1. Cria o usuário
-          const createUserRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              username,
-              email,
-              enabled: true,
-            }),
-          });
-      
-          if (createUserRes.status !== 201) {
-            const errorText = await createUserRes.text();
-            return res.status(createUserRes.status).json({ error: errorText });
-          }
-      
-          // 2. Recupera o ID do usuário recém-criado
-          const getUsersRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users?username=${username}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-      
-          const usersFound = await getUsersRes.json();
-          const user = usersFound.find((u: any) => u.username === username);
-          if (!user) {
-            return res.status(500).json({ error: 'Usuário criado, mas não encontrado para configuração' });
-          }
-      
-          const userId = user.id;
-      
-          // 3. Define a senha
-          await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${userId}/reset-password`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              type: 'password',
-              value: 'Admin123!',
-              temporary: false, // ou true se quiser forçar troca
-            }),
-          });
-      
-          // 4. Atribui a role 'admin'
-          const rolesRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/roles`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const allRoles = await rolesRes.json();
-          const adminRole = allRoles.find((r: any) => r.name === 'admin');
-      
-          if (adminRole) {
-            await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${userId}/role-mappings/realm`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify([adminRole]),
-            });
-          }
-      
-          return res.status(201).json({ message: 'Usuário criado com senha e role admin' });
-      
-        } catch (err: any) {
-          console.error('Erro ao criar usuário com senha e role:', err);
-          return res.status(500).json({ error: 'Erro interno ao criar usuário' });
-        }
+    } catch (err: any) {
+      console.error('Error updating user:', err);
+      return res.status(500).json({ error: 'Internal error updating user' });
+    }
+  }
+
+  if (req.method === 'DELETE') {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'userId is required' });
+    }
+
+    try {
+      const token = await getAdminToken();
+
+      const deleteRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (deleteRes.status === 204) {
+        return res.status(200).json({ message: 'User deleted successfully' });
+      } else {
+        const errorText = await deleteRes.text();
+        return res.status(deleteRes.status).json({ error: errorText });
       }
-      
+    } catch (err: any) {
+      console.error('Error deleting user:', err);
+      return res.status(500).json({ error: 'Internal error deleting user' });
+    }
+  }
+
+  if (req.method === 'POST') {
+    const { username, email, password, role } = req.body;
+
+    if (!username || !email) {
+      return res.status(400).json({ error: 'username and email are required' });
+    }
+
+    try {
+      const token = await getAdminToken();
+
+      const createUserRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          enabled: true,
+          emailVerified: false,
+        }),
+      });
+
+      if (createUserRes.status !== 201) {
+        const errorText = await createUserRes.text();
+        return res.status(createUserRes.status).json({ error: errorText });
+      }
+
+      const getUsersRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users?username=${username}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const usersFound = await getUsersRes.json();
+      const user = usersFound.find((u: any) => u.username === username);
+      if (!user) {
+        return res.status(500).json({ error: 'User created but not found for configuration' });
+      }
+
+      const userId = user.id;
+
+      const userPassword = password || 'Admin123!';
+      await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${userId}/reset-password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          type: 'password',
+          value: userPassword,
+          temporary: false,
+        }),
+      });
+
+      const userRole = role || 'admin';
+      const rolesRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/roles`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const allRoles = await rolesRes.json();
+      const targetRole = allRoles.find((r: any) => r.name === userRole);
+
+      if (targetRole) {
+        await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${userId}/role-mappings/realm`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify([targetRole]),
+        });
+      }
+
+      return res.status(201).json({ 
+        message: `User created successfully with role ${userRole}`,
+        user: { id: userId, username, email, enabled: true }
+      });
+
+    } catch (err: any) {
+      console.error('Error creating user:', err);
+      return res.status(500).json({ error: 'Internal error creating user' });
+    }
+  }
 
   if (req.method === 'GET') {
     try {
@@ -163,13 +223,53 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const data = await usersRes.json();
-      return res.status(200).json({ data });
+      
+      const enrichedUsers = await Promise.all(
+        data.map(async (user: any) => {
+          try {
+            const rolesRes = await fetch(`${NEXT_PRIVATE_QIAM_REALM_URL}/users/${user.id}/role-mappings/realm`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            
+            if (rolesRes.ok) {
+              const roles = await rolesRes.json();
+              const roleNames = roles.map((role: any) => role.name);
+              
+              return {
+                ...user,
+                roles: roleNames,
+                role: roleNames[0] || 'user',
+                status: user.enabled ? 'active' : 'inactive',
+              };
+            }
+            
+            return {
+              ...user,
+              roles: [],
+              role: 'user',
+              status: user.enabled ? 'active' : 'inactive',
+            };
+          } catch (error) {
+            console.error(`Error fetching roles for user ${user.id}:`, error);
+            return {
+              ...user,
+              roles: [],
+              role: 'user',
+              status: user.enabled ? 'active' : 'inactive',
+            };
+          }
+        })
+      );
+
+      return res.status(200).json({ data: enrichedUsers });
     } catch (err: any) {
-      console.error('Erro ao buscar usuários:', err);
-      return res.status(500).json({ error: 'Erro interno ao buscar usuários' });
+      console.error('Error fetching users:', err);
+      return res.status(500).json({ error: 'Internal error fetching users' });
     }
   }
 
-  res.setHeader('Allow', ['GET', 'POST']);
+  res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
   return res.status(405).json({ error: 'Method Not Allowed' });
 }

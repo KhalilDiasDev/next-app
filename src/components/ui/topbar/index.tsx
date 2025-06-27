@@ -51,12 +51,12 @@ export default function TopbarComponent({
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        <span style={{ fontSize: "0.95rem", color: "#555" }}>
+        <span style={{ fontSize: "0.95rem", color: "#fff" }}>
           {session?.user?.name}
         </span>
         <Button
           onClick={handleLogout}
-         className="border-white text-white hover:bg-white/10 hover:border-gray-300"
+         className=" bg-red-500 border-red-500 text-white hover:bg-red-600 hover:text-white"
         >
           Logout
         </Button>
