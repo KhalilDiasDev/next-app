@@ -226,67 +226,7 @@ export default function UserControlPanel() {
           </p>
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid gap-6 md:grid-cols-4 mb-8">
-          <Card className="bg-gradient-to-r from-blue-600 to-blue-700 border-0">
-            <div className="text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100 text-sm font-medium">
-                    Total Users
-                  </p>
-                  <p className="text-3xl font-bold">{stats.totalUsers}</p>
-                </div>
-                <UserOutlined className="text-4xl text-blue-200" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-green-600 to-green-700 border-0">
-            <div className="text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100 text-sm font-medium">
-                    Active Users
-                  </p>
-                  <p className="text-3xl font-bold">{stats.activeUsers}</p>
-                </div>
-                <div className="text-4xl text-green-200" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-orange-600 to-orange-700 border-0">
-            <div className="text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-orange-100 text-sm font-medium">
-                    Disabled Users
-                  </p>
-                  <p className="text-3xl font-bold">{stats.disabledUsers}</p>
-                </div>
-                <UserOutlined className="text-4xl text-orange-200" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-emerald-600 to-emerald-700 border-0">
-            <div className="text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-emerald-100 text-sm font-medium">
-                    System Status
-                  </p>
-                  <p className="text-xl font-bold flex items-center gap-2">
-                    {stats.systemStatus}
-                    <div className="animate-pulse w-3 h-3 bg-emerald-200 rounded-full"></div>
-                  </p>
-                </div>
-                <div className="text-4xl text-emerald-200" />
-              </div>
-            </div>
-          </Card>
-        </div>
+      
 
         {/* Users Section */}
         <Card
@@ -377,7 +317,6 @@ export default function UserControlPanel() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Tooltip title="Edit user">
                       <Button
                         type="default"
                         icon={<EditOutlined />}
@@ -386,8 +325,6 @@ export default function UserControlPanel() {
                       >
                         Edit
                       </Button>
-                    </Tooltip>
-                    <Tooltip title="Delete user">
                       <Button
                         danger
                         icon={<DeleteOutlined />}
@@ -396,7 +333,6 @@ export default function UserControlPanel() {
                       >
                         Delete
                       </Button>
-                    </Tooltip>
                   </div>
                 </Card>
               ))}

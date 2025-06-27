@@ -6,7 +6,6 @@ const {
   NEXT_PRIVATE_QIAM_ID,
   NEXT_PRIVATE_QIAM_SECRET,
   NEXT_PRIVATE_QIAM_REALM_URL,
-  NEXT_PRIVATE_QIAM_REALM,
 } = process.env;
 
 async function getAdminToken(): Promise<string> {
