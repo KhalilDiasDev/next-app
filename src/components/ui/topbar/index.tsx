@@ -30,6 +30,7 @@ export default function TopbarComponent({
       console.error("Failed to logout:", formatError(error));
     }
   }
+  
 
   return (
     <header
@@ -52,7 +53,7 @@ export default function TopbarComponent({
 
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <span style={{ fontSize: "0.95rem", color: "#fff" }}>
-          {session?.user?.name}
+          {session.user.preferred_username}
         </span>
         <Button
           onClick={handleLogout}
