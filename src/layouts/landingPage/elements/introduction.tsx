@@ -15,14 +15,14 @@ export default function HomeIntroductionLayout({
   const { data: session, status } = useSession();
 
   const handleSignUp = () => {
-    signIn(undefined, { callbackUrl: '/dashboard' }); // Redireciona para dashboard após login
+    signIn(undefined, { callbackUrl: '/workspaces' }); // Redireciona para dashboard após login
   };
 
   const handleSecureAccess = () => {
     if (redirectToLogin) {
       redirectToLogin();
     } else {
-      signIn(undefined, { callbackUrl: '/dashboard' });
+      signIn(undefined, { callbackUrl: '/workspaces' });
     }
   };
     
@@ -71,7 +71,7 @@ export default function HomeIntroductionLayout({
               loading={status === 'loading'}
               className="bg-white text-black border-none hover:bg-gray-200 shadow-lg shadow-white/25"
             >
-              {session ? 'Dashboard' : 'Secure Access'}
+              {session ? 'Dashboard' : 'Sign in'}
             </Button>
             <Button 
               type="default" 
