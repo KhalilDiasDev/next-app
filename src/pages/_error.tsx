@@ -24,7 +24,7 @@ export default function ErrorPage() {
 
         <h2 className="text-2xl font-bold mb-4">Página não encontrada</h2>
 
-        <Link href="/home">
+        <Link href="/workspaces">
           <button className="mt-4 px-6 py-2 flex-1 bg-blue-500 border-blue-500 text-white hover:bg-blue-600 hover:text-white rounded">
             Voltar para o início
           </button>
