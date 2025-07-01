@@ -214,33 +214,31 @@ export default function UserControlPanel() {
     <>
       <TopbarComponent />
 
-      <main className="p-8 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <main className="p-8 min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-            <SecurityScanOutlined className="text-blue-400" />
+          <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+            <SecurityScanOutlined className="text-blue-600" />
             User Control Panel
           </h1>
-          <p className="text-slate-400 text-lg">
+          <p className="text-gray-600 text-lg">
             Manage users and monitor system security
           </p>
         </div>
 
-      
-
         {/* Users Section */}
         <Card
-          className="bg-slate-800 border-slate-700"
+          className="bg-white border-gray-200 shadow-lg"
           title={
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                 <UserOutlined />
                 User Management
               </h2>
               <Button
                 icon={<PlusOutlined />}
                 onClick={() => setIsCreateModalVisible(true)}
-                className="bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700 text-white"
                 size="large"
               >
                 New User
@@ -248,26 +246,26 @@ export default function UserControlPanel() {
             </div>
           }
           headStyle={{
-            backgroundColor: "rgb(30 41 59)",
-            borderBottom: "1px solid rgb(51 65 85)",
+            backgroundColor: "white",
+            borderBottom: "1px solid #e5e7eb",
           }}
-          bodyStyle={{ backgroundColor: "rgb(30 41 59)" }}
+          bodyStyle={{ backgroundColor: "white" }}
         >
           {loading ? (
             <div className="text-center py-12">
               <div className="relative inline-block">
-                <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-600 border-t-blue-500"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-blue-600"></div>
                 <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-r-blue-400 animate-pulse"></div>
               </div>
-              <p className="text-slate-400 mt-6 text-lg animate-pulse"></p>
+              <p className="text-gray-600 mt-6 text-lg animate-pulse">Loading users...</p>
               <div className="flex justify-center gap-1 mt-4">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
                 <div
-                  className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                  className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
                   style={{ animationDelay: "0.1s" }}
                 ></div>
                 <div
-                  className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                  className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
                   style={{ animationDelay: "0.2s" }}
                 ></div>
               </div>
@@ -277,7 +275,7 @@ export default function UserControlPanel() {
               {users.map((user) => (
                 <Card
                   key={user.id}
-                  className="bg-slate-700 border-slate-600 hover:border-blue-500 transition-all duration-300"
+                  className="bg-gray-50 border-gray-200 hover:border-blue-400 hover:shadow-md transition-all duration-300"
                   bodyStyle={{ padding: "16px" }}
                 >
                   <div className="flex items-start justify-between mb-3">
@@ -288,13 +286,13 @@ export default function UserControlPanel() {
                         className="bg-blue-600"
                       />
                       <div>
-                        <h3 className="text-white font-semibold text-lg">
+                        <h3 className="text-gray-900 font-semibold text-lg">
                           {user.username}
                         </h3>
                         <Badge
                           color={getStatusColor(user.status)}
                           text={
-                            <span className="text-slate-300 text-sm">
+                            <span className="text-gray-700 text-sm">
                               {getStatusText(user.status)}
                             </span>
                           }
@@ -304,13 +302,13 @@ export default function UserControlPanel() {
                   </div>
 
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-slate-300">
-                      <MailOutlined className="text-blue-400" />
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <MailOutlined className="text-blue-600" />
                       <span className="text-sm">{user.email}</span>
                     </div>
                     {user.role && (
-                      <div className="flex items-center gap-2 text-slate-300">
-                        <UserOutlined className="text-green-400" />
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <UserOutlined className="text-green-600" />
                         <span className="text-sm capitalize">{user.role}</span>
                       </div>
                     )}
@@ -318,10 +316,10 @@ export default function UserControlPanel() {
 
                   <div className="flex gap-2">
                       <Button
-                        type="default"
+                        type="primary"
                         icon={<EditOutlined />}
                         onClick={() => openEditModal(user)}
-                        className="flex-1 bg-blue-500 border-blue-500 text-white hover:bg-blue-600 hover:text-white"
+                        className="flex-1 bg-blue-600 border-blue-600 hover:bg-blue-700 hover:border-blue-700"
                       >
                         Edit
                       </Button>
@@ -329,7 +327,7 @@ export default function UserControlPanel() {
                         danger
                         icon={<DeleteOutlined />}
                         onClick={() => confirmDeleteUser(user)}
-                        className="flex-1 bg-red-500 border-red-500 text-white hover:bg-red-600 hover:text-white"
+                        className="flex-1"
                       >
                         Delete
                       </Button>
@@ -341,16 +339,16 @@ export default function UserControlPanel() {
 
           {!loading && users.length === 0 && (
             <div className="text-center py-12">
-              <UserAddOutlined className="text-6xl text-slate-500 mb-4" />
-              <h3 className="text-xl text-slate-400 mb-2">No users found</h3>
-              <p className="text-slate-500 mb-4">
+              <UserAddOutlined className="text-6xl text-gray-400 mb-4" />
+              <h3 className="text-xl text-gray-700 mb-2">No users found</h3>
+              <p className="text-gray-500 mb-4">
                 Start by creating your first user
               </p>
               <Button
                 icon={<PlusOutlined />}
                 onClick={() => setIsCreateModalVisible(true)}
                 size="large"
-                className="bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700 text-white"
               >
                 Create First User
               </Button>
@@ -362,7 +360,7 @@ export default function UserControlPanel() {
         <Modal
           title={
             <div className="flex items-center gap-2 text-lg">
-              <UserAddOutlined className="text-blue-500" />
+              <UserAddOutlined className="text-blue-600" />
               Create New User
             </div>
           }
@@ -377,7 +375,7 @@ export default function UserControlPanel() {
           okButtonProps={{
             className:
               "bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700",
-            type: "default",
+            type: "primary",
             size: "large",
           }}
           cancelButtonProps={{
@@ -387,7 +385,7 @@ export default function UserControlPanel() {
         >
           <div className="space-y-4 py-4">
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-gray-700">
                 Username *
               </label>
               <Input
@@ -401,7 +399,7 @@ export default function UserControlPanel() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Email *</label>
+              <label className="block text-sm font-medium mb-2 text-gray-700">Email *</label>
               <Input
                 placeholder="Enter email"
                 value={newUser.email}
@@ -420,7 +418,7 @@ export default function UserControlPanel() {
         <Modal
           title={
             <div className="flex items-center gap-2 text-lg">
-              <EditOutlined className="text-orange-500" />
+              <EditOutlined className="text-orange-600" />
               Edit User
             </div>
           }
@@ -433,9 +431,10 @@ export default function UserControlPanel() {
           okText="Save Changes"
           cancelText="Cancel"
           okButtonProps={{
-            type: "default",
+            type: "primary",
             className:
               "bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700",
+            size: "large",
           }}
           cancelButtonProps={{
             size: "large",
@@ -445,7 +444,7 @@ export default function UserControlPanel() {
           {editingUser && (
             <div className="space-y-4 py-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-medium mb-2 text-gray-700">
                   Username
                 </label>
                 <Input
@@ -459,7 +458,7 @@ export default function UserControlPanel() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Email</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Email</label>
                 <Input
                   placeholder="Enter email"
                   value={editingUser.email}
@@ -474,9 +473,11 @@ export default function UserControlPanel() {
             </div>
           )}
         </Modal>
+
+        {/* Delete Confirmation Modal */}
         <Modal
           title={
-            <div className="flex items-center gap-2 text-lg text-red-500">
+            <div className="flex items-center gap-2 text-lg text-red-600">
               <DeleteOutlined />
               Delete Confirm
             </div>
@@ -503,7 +504,7 @@ export default function UserControlPanel() {
                 if (userToDelete) handleDeleteUser(userToDelete.id);
                 setIsDeleteModalVisible(false);
               }}
-              className="bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700 text-white"
+              danger
               size="large"
             >
               Delete user
@@ -513,13 +514,13 @@ export default function UserControlPanel() {
         >
           {userToDelete && (
             <div className="space-y-3 py-2">
-              <p className="text-slate-300">
+              <p className="text-gray-700">
                 Are you sure you want to delete the user?
               </p>
-              <p className="text-lg font-semibold text-white">
+              <p className="text-lg font-semibold text-gray-900">
                 {userToDelete.username} ({userToDelete.email})
               </p>
-              <p className="text-sm text-red-400">
+              <p className="text-sm text-red-600">
                 This action is irreversible and will permanently remove the user
                 from the system.
               </p>

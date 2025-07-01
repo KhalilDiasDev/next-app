@@ -73,14 +73,7 @@ export default function HomeIntroductionLayout({
             >
               {session ? 'Dashboard' : 'Sign in'}
             </Button>
-            <Button 
-              type="default" 
-              onClick={handleSignUp}
-              loading={status === 'loading'}
-              className="border-white text-white hover:bg-white/10 hover:border-gray-300"
-            >
-              {session ? 'Welcome Back' : 'Start Protection'}
-            </Button>
+           
           </div>
           
           <div className="relative text-center py-10 px-4 md:px-12 lg:px-24 xl:px-40 text-white">
