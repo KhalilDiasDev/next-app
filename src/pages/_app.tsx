@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { ConfigProvider, notification, theme } from "antd";
-import { customDarkTheme, customTheme } from "@/assets/theme";
+import { customTheme } from "@/assets/theme";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useEffect, useState } from "react";
 import { ThemeContext } from "@/context/theme";
@@ -53,15 +53,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeContext.Provider value={{ isThemeDark, toggleTheme }}>
         <SessionProvider session={pageProps.session}>
           <ConfigProvider
-            theme={{
-              ...(!isThemeDark ? customTheme : customDarkTheme),
-              algorithm: isThemeDark ? darkAlgorithm : defaultAlgorithm,
-              components: {
-                Carousel: {
-                  arrowSize: 20,
-                },
-              },
-            }}
+           
           >
             <QueryClientProvider client={queryClient}>
               <NotificationContext.Provider value={{ notification: api }}>

@@ -1,4 +1,3 @@
-import { LoadingHook } from "@/hooks/loading";
 import { Button } from "antd";
 
 interface props {
@@ -15,28 +14,9 @@ export default function LoadingButtonComponent({
   children,
   ...rest
 }: props) {
-  const { isLoading, toggleLoading } = LoadingHook(false);
 
-  const handleClick = async () => {
-    try {
-      toggleLoading(true);
-      await onClick();
-    } catch (error) {
-      console.error("error while fetching", error);
-    } finally {
-      toggleLoading(false);
-    }
-  };
 
   return (
-    <Button
-      type={type}
-      loading={isLoading}
-      icon={icon}
-      onClick={handleClick}
-      {...rest}
-    >
-      {children}
-    </Button>
+<div></div>
   );
 }

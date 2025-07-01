@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FormattedInputComponent } from "@/components/inputs/FormattedInput";
 import { useNotificationContext } from "@/context/notification";
-import { LoadingHook } from "@/hooks/loading";
 import { nextApi } from "@/services";
 import formatError from "@/utils/format/formatError";
 import {
@@ -19,7 +18,6 @@ import {
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Icons from "@/data/icons";
-import { canvasItems } from "@/data/canvas";
 import { FormDetails } from "./formDetails";
 
 export interface FormItem {
@@ -94,7 +92,6 @@ export default function CreateModal({
   const { data: session }: any = useSession();
   const router = useRouter();
   const { notification } = useNotificationContext();
-  const { isLoading, toggleLoading } = LoadingHook();
   const [selectedOption, setSelectedOption] = useState<
     SelectedOptionProps | undefined
   >(undefined);
@@ -128,102 +125,6 @@ export default function CreateModal({
     }
   };
 
-  async function onCreate(values: any) {
-    try {
-      toggleLoading(true);
-
-      let body: any;
-
-      switch (selectedOption) {
-        case "template":
-          if (!selectedTemplate?.data?.canvas) {
-            throw new Error(
-              "Invalid template structure: missing second canvas."
-            );
-          }
-
-          body = {
-            description: selectedTemplate.description,
-            canvas: selectedTemplate.data.canvas,
-            user_id: session.user.id,
-          };
-
-          break;
-        case "ai":
-          const aiResult = await handleAICreation(values?.prompt);
-          body = { ...aiResult, description: values?.prompt };
-          break;
-        default:
-          body = {
-            ...formatBody(values, workspaces),
-            user_id: session.user.id,
-          };
-      }
-
-      body.name = values.name || "Untitled Workspace";
-      body.template = values.template || false;
-
-      if (!body.name || !body.user_id) {
-        throw new Error("Missing required fields in the imported data.");
-      }
-
-      const result = await nextApi.post(`/api/workspaces`, body);
-
-      notification.success({
-        message: result.data.message,
-      });
-
-      const getPath = `/api/workspaces?filter={"name": "${body.name}"}&userId=${session.user.id}`;
-
-      const response = await nextApi
-        .get(getPath)
-        .then((res) => res.data.data as Workspace.Props[]);
-
-      if (response.length) {
-        const createdItem = response[0];
-        const id = createdItem._id?.$oid;
-
-        await router.push(`/workspaces/${id}`);
-      }
-
-      form.resetFields();
-      handleClose();
-    } catch (error) {
-      notification.error({
-        message: `Error creating workspace`,
-        description: formatError(error),
-      });
-    } finally {
-      toggleLoading(false);
-    }
-  }
-
-  const handleAICreation = async (prompt: string) => {
-    const promises = canvasItems.map((item) =>
-      nextApi
-        .post("/api/ai", {
-          prompt: prompt,
-          data: item,
-        })
-        .then((res) => res.data.results)
-    );
-
-    const result = await Promise.all(promises);
-
-    const updatedCanvas = result.reduce((acc, item) => {
-      acc[item.name] = item.nodes;
-      return acc;
-    }, {});
-
-    const formValues = await form.validateFields();
-    const workspaceData = {
-      name: formValues.name,
-      user_id: session.user.id,
-      canvas: updatedCanvas,
-    };
-
-    return workspaceData;
-  };
 
   return (
     <Modal
@@ -238,67 +139,7 @@ export default function CreateModal({
     >
       {selectedOption ? (
         <Space direction="vertical" style={{ width: "100%" }}>
-          <Form
-            layout="vertical"
-            autoComplete="off"
-            form={form}
-            onFinish={onCreate}
-          >
-            <Row gutter={16}>
-              <Col span={20}>
-                <Form.Item
-                  name="name"
-                  label="Workspace Name"
-                  rules={[
-                    { required: true, message: "This field is required" },
-                  ]}
-                >
-                  <Input placeholder="Workspace Name" />
-                </Form.Item>
-              </Col>
-              <Col span={4}>
-                <Form.Item
-                  name="template"
-                  label="Template"
-                  valuePropName="checked"
-                >
-                  <Switch />
-                </Form.Item>
-              </Col>
-            </Row>
-            <FormDetails
-              type={selectedOption}
-              templates={
-                templates.map((item) => ({
-                  key: item._id.$oid,
-                  label: item.name,
-                  description: "Custom template",
-                  category: "Custom",
-                  data: item,
-                })) || []
-              }
-              selectedTemplate={selectedTemplate}
-              onSelectTemplate={handleSelectTemplate}
-            />
-            <Space style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button
-                type="default"
-                onClick={() => setSelectedOption(undefined)}
-              >
-                Back
-              </Button>
-              <Form.Item style={{ margin: 0 }}>
-                <Button
-                  htmlType="submit"
-                  type="primary"
-                  loading={isLoading}
-                  disabled={CreateButtonDisabled}
-                >
-                  Create
-                </Button>
-              </Form.Item>
-            </Space>
-          </Form>
+        
         </Space>
       ) : (
         <Space direction="vertical" style={{ width: "100%" }}>

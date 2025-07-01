@@ -68,9 +68,9 @@ export default function UserControlPanel() {
       const data = await res.json();
       const userData = Array.isArray(data.data) ? data.data : [];
   
-      const currentUserId = session?.user?.id;
-      const filtered = currentUserId
-        ? userData.filter((u: User) => u.id !== currentUserId)
+      const currentUserEmail = session?.user?.email;
+      const filtered = currentUserEmail
+        ? userData.filter((u: User) => u.email !== currentUserEmail)
         : userData;
   
       setUsers(filtered);
